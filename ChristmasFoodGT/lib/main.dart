@@ -82,8 +82,8 @@ class _HomeState extends State<MyApp> {
     if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi){
       return 1;
     }else{
-      return 2;
-    };
+      return 0;
+    }
   }
 
   void _handleIndexChanged(int i) {

@@ -19,7 +19,7 @@ class FavoritesPage extends StatelessWidget {
       }
       return list;
     }
-    return Column(
+    return ListView(
       children: data()
     );
   }
