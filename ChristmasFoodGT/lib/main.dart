@@ -1,8 +1,13 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:ChristmasFoodGT/favoritesPage.dart';
-import 'package:ChristmasFoodGT/productsPage.dart';
+import 'package:ChristmasFoodGT/productsPageGen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
@@ -11,14 +16,20 @@ import './listViewCompanies.dart';
 
 import 'package:connectivity/connectivity.dart';
 
+import 'addCompany.dart';
+
 var url = 'https://www.instagram.com/corderobot/';
 
 enum _SelectedTab { inicio, favoritos, creditos }
 int nCompany = 0;
 int _isConnected = 0;
+int _agregarEmpresa = 0;
 
-  final productos = [
-    [{
+String base64Image;
+
+final productos = [
+  [
+    {
       "foto": "http://images.trepico.com.gt/images/Pierna.jpg",
       "titulo": "Pierna",
       "descripcion": "Pierna Horneada en salsa navideña con vino tinto",
@@ -29,13 +40,14 @@ int _isConnected = 0;
     {
       "foto": "http://images.trepico.com.gt/images/Tamal.jpg",
       "titulo": "Tamal",
-      "descripcion":
-          "Tamal negro o Colorado de Pollo, Cerdo o Pavo",
+      "descripcion": "Tamal negro o Colorado de Pollo, Cerdo o Pavo",
       "precio": "Q15.00",
       "cantidad": "1 porcion",
       "favorito": false
-    }],
-    [{
+    }
+  ],
+  [
+    {
       "foto": "http://images.trepico.com.gt/images/Reno.jpg",
       "titulo": "Reno",
       "descripcion":
@@ -47,12 +59,14 @@ int _isConnected = 0;
     {
       "foto": "http://images.trepico.com.gt/images/SmoreTart.jpg",
       "titulo": "Smore's Tart",
-      "descripcion": "Tarta rellena de Cremoso de Chocolate, Marshmallow Flameado, Crema de Marshmallow de la Casa y Mini Brownie Bites",
+      "descripcion":
+          "Tarta rellena de Cremoso de Chocolate, Marshmallow Flameado, Crema de Marshmallow de la Casa y Mini Brownie Bites",
       "precio": "Q35.00",
       "cantidad": "1 lb",
       "favorito": false
-    }]
-  ];
+    }
+  ]
+];
 
 void main() {
   LicenseRegistry.addLicense(() async* {
@@ -60,9 +74,9 @@ void main() {
     yield LicenseEntryWithLineBreaks(['google_fonts'], license);
   });
 
-  
   runApp(MyApp());
 }
+
 class MyApp extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _HomeState();
@@ -70,6 +84,23 @@ class MyApp extends StatefulWidget {
 
 class _HomeState extends State<MyApp> {
   var _selectedTab = _SelectedTab.inicio;
+
+  Uint8List _image;
+  
+  final picker = ImagePicker();
+
+  Future getImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path).readAsBytesSync();
+        base64Image = base64Encode(_image);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
 
   hasAsync() {
     asyncFunction().then((val) {
@@ -79,9 +110,10 @@ class _HomeState extends State<MyApp> {
 
   Future<int> asyncFunction() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi){
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
       return 1;
-    }else{
+    } else {
       return 0;
     }
   }
@@ -90,6 +122,7 @@ class _HomeState extends State<MyApp> {
     setState(() {
       _selectedTab = _SelectedTab.values[i];
       nCompany = 0;
+      _agregarEmpresa = 0;
     });
   }
 
@@ -106,26 +139,53 @@ class _HomeState extends State<MyApp> {
     });
   }
 
+  void _handleAddCompany() {
+    setState(() {
+      _agregarEmpresa = 1;
+    });
+  }
+
+  void _handleLikedChanged(int nCompanyLike, int nElementoLike) {
+    setState(() {
+      productos[nCompanyLike - 1][nElementoLike]["favorito"] =
+          !productos[nCompanyLike - 1][nElementoLike]["favorito"];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    if(_isConnected == 0) hasAsync();
+    if (_isConnected == 0) hasAsync();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+        floatingActionButton: FloatingActionButton(
+        onPressed: getImage,
+        tooltip: 'Pick Image',
+        child: Icon(Icons.add_a_photo),
+      ),
         appBar: AppBar(
           title: Text("Comida Navideña"),
           backgroundColor: Colors.green,
           actions: [
-            _isConnected == 1 ? Container() : Icon(Icons.wifi_off)
+            IconButton(
+              icon: _isConnected == 1
+                  ? Icon(Icons.add_business)
+                  : Icon(Icons.wifi_off),
+              onPressed: () {
+                _handleAddCompany();
+              },
+            ),
           ],
         ),
-        body: nCompany > 0
-            ? ProductsPage(nCompany, 0)
-            : _SelectedTab.values.indexOf(_selectedTab) == 0
-                ? ListViewCompanies(_handleCompanySelected)
-                : _SelectedTab.values.indexOf(_selectedTab) == 1
-                    ? FavoritesPage()
-                    : MySlimyCard(),
+        body: _agregarEmpresa == 1
+            ? AddCompany()
+            : nCompany > 0
+                ? ProductsPageGen(nCompany, _handleLikedChanged)
+                : _SelectedTab.values.indexOf(_selectedTab) == 0
+                    ? ListViewCompanies(_handleCompanySelected)
+                    : _SelectedTab.values.indexOf(_selectedTab) == 1
+                        ? FavoritesPage(_handleLikedChanged)
+                        : MySlimyCard(),
         bottomNavigationBar: SalomonBottomBar(
           currentIndex: _SelectedTab.values.indexOf(_selectedTab),
           onTap: _handleIndexChanged,

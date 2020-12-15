@@ -4,17 +4,19 @@ import "./main.dart";
 
 class FavoritesPage extends StatelessWidget {
 
+  final Function changeLike;
+
+  FavoritesPage(this.changeLike);
+
   @override
   Widget build(BuildContext context) {
 
     List<Widget> data(){
       List<Widget> list = List();
       for(int i = 0; i < productos.length; i++){
-        print(i);
         for(int p = 0; p < productos[i].length; p++){
-          print(p);
-          if(!productos[i][p]["favorito"])
-            list.add(ProductsPage(i + 1,p));
+          if(productos[i][p]["favorito"])
+            list.add(ProductsPage(i + 1,p, changeLike));
         }
       }
       return list;
