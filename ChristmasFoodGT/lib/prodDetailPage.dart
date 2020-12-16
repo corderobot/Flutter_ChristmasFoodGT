@@ -10,6 +10,7 @@ class ProdDetailPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(titulo),
+        backgroundColor: Colors.green,
       ),
       body: Column(
         children: [

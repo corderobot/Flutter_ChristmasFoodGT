@@ -140,7 +140,8 @@ class _HomeState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: Text("Comida Navideña"),
+          title: Text("Comida Navideña", style:
+              TextStyle(fontFamily: 'Nerko', fontSize: 25)),
           backgroundColor: Colors.green,
           actions: [
             IconButton(
