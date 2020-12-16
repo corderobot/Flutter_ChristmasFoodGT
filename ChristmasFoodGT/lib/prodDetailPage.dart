@@ -1,28 +1,26 @@
 import "package:flutter/material.dart";
 
 class ProdDetailPage extends StatelessWidget {
-  final Map<String, Object> producto;
-  final int nCompany, nElemento;
-  final String etiquetaPush;
+  final String etiquetaPush, titulo, descripcion, foto;
 
-  ProdDetailPage(this.producto,this.nCompany,this.nElemento,this.etiquetaPush);
+  ProdDetailPage(this.titulo,this.descripcion,this.foto,this.etiquetaPush);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(producto["titulo"]),
+        title: Text(titulo),
       ),
       body: Column(
         children: [
           Hero(
             tag: etiquetaPush,
-            child: Image.network(producto["foto"]),
+            child: Image.network(foto),
           ),
           Padding(
             padding: const EdgeInsets.all(30.0),
             child: Text(
-              producto["descripcion"],
+              descripcion,
               style: TextStyle(fontSize: 30),
             ),
           )

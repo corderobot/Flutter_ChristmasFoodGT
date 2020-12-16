@@ -1,13 +1,8 @@
-import 'dart:convert';
-import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:ChristmasFoodGT/favoritesPage.dart';
 import 'package:ChristmasFoodGT/productsPageGen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
 
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
@@ -20,7 +15,7 @@ import 'addCompany.dart';
 
 var url = 'https://www.instagram.com/corderobot/';
 
-enum _SelectedTab { inicio, favoritos, creditos }
+enum _SelectedTab { inicio, creditos, favoritos }
 int nCompany = 0;
 int _isConnected = 0;
 int _agregarEmpresa = 0;
@@ -83,25 +78,11 @@ class MyApp extends StatefulWidget {
 }
 
 class _HomeState extends State<MyApp> {
+
+
   var _selectedTab = _SelectedTab.inicio;
 
-  Uint8List _image;
   
-  final picker = ImagePicker();
-
-  Future getImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
-
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path).readAsBytesSync();
-        base64Image = base64Encode(_image);
-      } else {
-        print('No image selected.');
-      }
-    });
-  }
-
   hasAsync() {
     asyncFunction().then((val) {
       _handleConnection(val);
@@ -158,11 +139,6 @@ class _HomeState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        floatingActionButton: FloatingActionButton(
-        onPressed: getImage,
-        tooltip: 'Pick Image',
-        child: Icon(Icons.add_a_photo),
-      ),
         appBar: AppBar(
           title: Text("Comida Navideña"),
           backgroundColor: Colors.green,
@@ -178,13 +154,11 @@ class _HomeState extends State<MyApp> {
           ],
         ),
         body: _agregarEmpresa == 1
-            ? AddCompany()
+            ? AddCompany(_handleIndexChanged)
             : nCompany > 0
                 ? ProductsPageGen(nCompany, _handleLikedChanged)
                 : _SelectedTab.values.indexOf(_selectedTab) == 0
                     ? ListViewCompanies(_handleCompanySelected)
-                    : _SelectedTab.values.indexOf(_selectedTab) == 1
-                        ? FavoritesPage(_handleLikedChanged)
                         : MySlimyCard(),
         bottomNavigationBar: SalomonBottomBar(
           currentIndex: _SelectedTab.values.indexOf(_selectedTab),
@@ -197,12 +171,12 @@ class _HomeState extends State<MyApp> {
               selectedColor: Colors.grey[400],
             ),
 
-            /// Likes
-            SalomonBottomBarItem(
-              icon: Icon(Icons.favorite),
-              title: Text("Favoritos"),
-              selectedColor: Colors.red[700],
-            ),
+            // /// Likes
+            // SalomonBottomBarItem(
+            //   icon: Icon(Icons.favorite),
+            //   title: Text("Favoritos"),
+            //   selectedColor: Colors.red[700],
+            // ),
 
             /// Search
             SalomonBottomBarItem(

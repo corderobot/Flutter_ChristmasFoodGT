@@ -85,7 +85,9 @@ class MySlimyCard extends StatelessWidget {
             text: "@Corderobot",
             style: TextStyle(
               fontWeight: FontWeight.bold,
+              color: Colors.lightBlue[900],
               fontSize: 20,
+              decoration: TextDecoration.underline
             ),
             recognizer: TapGestureRecognizer()
               ..onTap = () async {

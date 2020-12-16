@@ -5,28 +5,26 @@ import "package:flutter/material.dart";
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
-class AddCompany extends StatelessWidget {
+class AddProduct extends StatelessWidget {
   String _name;
-  String _address;
-  String _telephone;
-  String _type;
-  String _email;
+  String _precio;
+  String _descripcion;
+  int _idCompany;
 
   String respuestaBody;
 
-  final Function regresar;
+  final int companyID;
 
-  AddCompany(this.regresar);
+  AddProduct(this.companyID);
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   Future<List> senddata() async {
-  final response = await http.post("http://images.trepico.com.gt/archivos/conection.php", body: {
+  final response = await http.post("http://images.trepico.com.gt/archivos/conectionProd.php", body: {
     "name": _name,
-    "address": _address,
-    "telephone": _telephone,
-    "type": _type,
-    "email": _email,
+    "price": _precio,
+    "description": _descripcion,
+    "idCompany": _idCompany.toString(),
     "photo": "http://images.trepico.com.gt/archivos/" + _name.replaceAll(new RegExp(r"\s+"), "") + ".jpg",
   });
 
@@ -48,59 +46,31 @@ class AddCompany extends StatelessWidget {
     );
   }
 
-  Widget _buildAddressField() {
+  Widget _buildPriceField() {
     return TextFormField(
-      decoration: InputDecoration(labelText: 'Dirección'),
+      decoration: InputDecoration(labelText: 'Precio'),
+      keyboardType: TextInputType.numberWithOptions(decimal:true),
       validator: (String value) {
         if (value.isEmpty) {
-          return 'La dirección es requerida';
+          return 'El precio es requerido';
         }
       },
       onSaved: (String value) {
-        _address = value;
+        _precio = value;
       },
     );
   }
 
-  Widget _buildTelephoneField() {
+  Widget _buildDescriptionField() {
     return TextFormField(
-      decoration: InputDecoration(labelText: 'Teléfono'),
-      keyboardType: TextInputType.phone,
+      decoration: InputDecoration(labelText: 'Descripcion'),
       validator: (String value) {
         if (value.isEmpty) {
-          return 'El teléfono es requerido';
+          return 'La descripción es requerida';
         }
       },
       onSaved: (String value) {
-        _telephone = value;
-      },
-    );
-  }
-
-  Widget _buildTypeField() {
-    return TextFormField(
-      decoration: InputDecoration(labelText: '(Salado, dulce...)'),
-      validator: (String value) {
-        if (value.isEmpty) {
-          return 'El tipo es requerido';
-        }
-      },
-      onSaved: (String value) {
-        _type = value;
-      },
-    );
-  }
-
-  Widget _buildEmailField() {
-    return TextFormField(
-      decoration: InputDecoration(labelText: 'Correo'),
-      validator: (String value) {
-        if (value.isEmpty) {
-          return 'El correo es requerido';
-        }
-      },
-      onSaved: (String value) {
-        _email = value;
+        _descripcion = value;
       },
     );
   }
@@ -137,18 +107,19 @@ class AddCompany extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Form(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Añadir Producto"),
+      ),
+      body: Form(
         key: _formKey,
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _buildNameField(),
-              _buildAddressField(),
-              _buildEmailField(),
-              _buildTelephoneField(),
-              _buildTypeField(),
+              _buildDescriptionField(),
+              _buildPriceField(),
               SizedBox(height: 50),
               RaisedButton(
                 child: Text(
@@ -169,10 +140,11 @@ class AddCompany extends StatelessWidget {
                   if (!_formKey.currentState.validate()) {
                     return;
                   }
+                  _idCompany = companyID;
                   _formKey.currentState.save();
                   enviarImagen();
                   senddata();
-                  regresar(0);
+                  Navigator.pop(context);
                 },
               )
             ],
