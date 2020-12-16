@@ -3,13 +3,18 @@ import "package:flutter/material.dart";
 class ProdDetailPage extends StatelessWidget {
   final String etiquetaPush, titulo, descripcion, foto;
 
-  ProdDetailPage(this.titulo,this.descripcion,this.foto,this.etiquetaPush);
+  ProdDetailPage(this.titulo, this.descripcion, this.foto, this.etiquetaPush);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(titulo),
+        title: Text(
+          titulo,
+          style: TextStyle(
+            fontFamily: 'Nerko',
+          ),
+        ),
         backgroundColor: Colors.green,
       ),
       body: Column(
@@ -22,7 +27,9 @@ class ProdDetailPage extends StatelessWidget {
             padding: const EdgeInsets.all(30.0),
             child: Text(
               descripcion,
-              style: TextStyle(fontSize: 30),
+              style: TextStyle(
+                fontFamily: 'Nerko', fontSize: 30,
+              ),
             ),
           )
         ],

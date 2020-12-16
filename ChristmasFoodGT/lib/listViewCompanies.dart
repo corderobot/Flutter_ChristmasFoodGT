@@ -82,10 +82,12 @@ class ListViewCompanies extends StatelessWidget {
 
         return Column(
           children: [
-            Text(
+          SizedBox(height: 20),
+          Text(
               "Click en la imágen para + información",
               style: TextStyle(fontSize: 20),
             ),
+            SizedBox(height: 20),
             Column(
               children: snapshot.data
                   .map(

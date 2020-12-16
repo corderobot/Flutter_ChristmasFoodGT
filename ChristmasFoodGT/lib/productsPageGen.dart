@@ -72,24 +72,32 @@ class ProductsPageGen extends StatelessWidget {
       'http://images.trepico.com.gt/archivos/conectionGetProducts.php';
 
   Future<List<ProductData>> fetchProducts() async {
-    try{
-     var response =
-        await http.post(apiURL, body: {"aidi": nCompayGen.toString()});
+    try {
+      var response =
+          await http.post(apiURL, body: {"aidi": nCompayGen.toString()});
 
-    if (response.statusCode == 200) {
-      final items = json.decode(response.body).cast<Map<String, dynamic>>();
+      if (response.statusCode == 200) {
+        final items = json.decode(response.body).cast<Map<String, dynamic>>();
 
-      List<ProductData> studentList = items.map<ProductData>((json) {
-        return ProductData.fromJson(json);
-      }).toList();
+        List<ProductData> studentList = items.map<ProductData>((json) {
+          return ProductData.fromJson(json);
+        }).toList();
 
-      return studentList;
-    } else {
-      throw Exception('Failed to load data from Server.'); 
-    }
-    }catch (e){
+        return studentList;
+      } else {
+        throw Exception('Failed to load data from Server.');
+      }
+    } catch (e) {
       print(e);
-      return [new ProductData(productName: "No hay productos", productID: 1, productFoto: "http://images.trepico.com.gt/archivos/error.png", productPrice: 0, productDescription: "Producto inexistente", productCompany: 0)];
+      return [
+        new ProductData(
+            productName: "No hay productos",
+            productID: 1,
+            productFoto: "http://images.trepico.com.gt/archivos/error.png",
+            productPrice: 0,
+            productDescription: "Producto inexistente",
+            productCompany: 0)
+      ];
     }
   }
 
@@ -169,8 +177,21 @@ class ProductsPageGen extends StatelessWidget {
                                 alignment: Alignment.center,
                                 child: Column(
                                   children: [
-                                    Text(data.productName),
-                                    Text("Q" + data.productPrice.toString())
+                                    Text(
+                                      data.productName,
+                                      style: TextStyle(
+                                        fontFamily: 'Nerko',
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                    Text(
+                                      "Q" + data.productPrice.toString(),
+                                      style: TextStyle(
+                                        fontFamily: 'Nerko',
+                                        fontSize: 15,
+                                      ),
+                                    )
                                   ],
                                 ),
                               ),
@@ -189,13 +210,12 @@ class ProductsPageGen extends StatelessWidget {
                 child: Text(
                   "Agregar Producto",
                   style: TextStyle(
-                      color: Colors.lightBlueAccent[900], fontSize: 16),
+                      color: Colors.lightBlueAccent[900], fontSize: 20, fontFamily: 'Nerko'),
                 ),
-                onPressed: () { 
+                onPressed: () {
                   pushRouteAdd(context);
-                }
-              ),
-              SizedBox(height: 50),
+                }),
+            SizedBox(height: 50),
           ],
         );
       },
