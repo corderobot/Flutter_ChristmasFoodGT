@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:ChristmasFoodGT/addProduct.dart';
 import 'package:ChristmasFoodGT/likeButton.dart';
 import 'package:ChristmasFoodGT/prodDetailPage.dart';
-import 'package:ChristmasFoodGT/productsPage.dart';
 import "package:flutter/material.dart";
 import "./main.dart";
 
@@ -12,7 +11,7 @@ import 'package:http/http.dart' as http;
 class ProductData {
   int productID;
   String productName;
-  int productPrice;
+  String productPrice;
   String productDescription;
   int productCompany;
   String productFoto;
@@ -30,7 +29,7 @@ class ProductData {
     return ProductData(
         productID: json['ID'],
         productName: json['Nombre'],
-        productPrice: json['Precio'],
+        productPrice: json['Precio'].toString(),
         productDescription: json['Descripcion'],
         productFoto: json['foto'],
         productCompany: json['IDCompania']);
@@ -94,7 +93,7 @@ class ProductsPageGen extends StatelessWidget {
             productName: "No hay productos",
             productID: 1,
             productFoto: "http://images.trepico.com.gt/archivos/error.png",
-            productPrice: 0,
+            productPrice: "0",
             productDescription: "Producto inexistente",
             productCompany: 0)
       ];
@@ -186,7 +185,7 @@ class ProductsPageGen extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      "Q" + data.productPrice.toString(),
+                                      "Q" + data.productPrice,
                                       style: TextStyle(
                                         fontFamily: 'Nerko',
                                         fontSize: 15,
